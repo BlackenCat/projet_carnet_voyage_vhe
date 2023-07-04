@@ -30,6 +30,7 @@ Le login sera sous la forme Nom Prenom Pseudo Mdp
 
 Les activités sont sous la forme titre description et image. 
 Les images seront en réalité des URL d'accès à l'image générer automatiquement.
+Les images seront stocker dans une autre tables en utilisant l'id de l'activité pour etre catégorisé et s'afficher dans l'activité prevus à cet effet.
 
 ## Les APIs
 
