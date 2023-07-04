@@ -31,7 +31,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
   TextEditingController commentController = TextEditingController();
   late DateTime selectedDate;
   late String selectedImagePath;
-  WeatherFactory weatherFactory = WeatherFactory("YOUR_API_KEY", language: Language.FRENCH);
+  WeatherFactory weatherFactory = WeatherFactory("d1555451a6d58b703c400f0d4769379f", language: Language.FRENCH);
 
   Future<void> selectDate(BuildContext context) async {
     final DateTime? pickedDate = await DatePicker.showDatePicker(
@@ -159,7 +159,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             final weather = snapshot.data;
-                            return Text('Météo : ${weather.temperature.celsius}°C, ${weather.weatherDescription}');
+                            return Text('Météo : ${weather?.temperature?.celsius ?? 'N/A'}°C, ${weather?.weatherDescription ?? 'N/A'} ');
                           } else if (snapshot.hasError) {
                             return Text('Erreur de chargement de la météo');
                           } else {
