@@ -1,16 +1,22 @@
 # projet_carnet_voyage_vhe
 
-A new Flutter project.
+Projet du tp flutter sur le Carnet de voyage.
 
-## Getting Started
+## Les versions.
+  sdk: '>=2.19.6 <3.0.0'
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+dependencies:
+  flutter:
+    sdk: flutter
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+  cupertino_icons: ^1.0.2
+  weather: ^3.0.0
+  image_picker: ^1.0.0
+  flutter_datetime_picker: ^1.5.1
+  open_weather_api_client: ^3.1.1
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Flutter :  3.7.12
+
+
+
