@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "814616337775",
+    "project_id": "carnet-voyage-9c1dd",
+    "storage_bucket": "carnet-voyage-9c1dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814616337775:android:61259d8c3c8a1ad9401c9a",
+        "android_client_info": {
+          "package_name": "carnet.voyage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "814616337775-dmo2idbjc026gcp14hifmeg895givpb2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALbkV5T4H41y45Nc0fbnGklQcyLcrpL1U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "814616337775-dmo2idbjc026gcp14hifmeg895givpb2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
