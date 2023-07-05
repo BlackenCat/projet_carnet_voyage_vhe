@@ -21,6 +21,7 @@ class TravelJournalApp extends StatelessWidget {
 }
 
 class TravelJournalScreen extends StatefulWidget {
+
   @override
   _TravelJournalScreenState createState() => _TravelJournalScreenState();
 }
