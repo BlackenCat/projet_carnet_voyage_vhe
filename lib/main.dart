@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:projet_carnet_voyage_vhe/UserCubit.dart';
 import 'package:weather/weather.dart';
 
 void main() => runApp(TravelJournalApp());
@@ -31,7 +33,21 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
   TextEditingController commentController = TextEditingController();
   late DateTime selectedDate;
   late String selectedImagePath;
-  WeatherFactory weatherFactory = WeatherFactory("d1555451a6d58b703c400f0d4769379f", language: Language.FRENCH);
+  late UserCubit _userCubit;
+  WeatherFactory weatherFactory =
+  WeatherFactory("d1555451a6d58b703c400f0d4769379f", language: Language.FRENCH);
+
+  @override
+  void initState() {
+    super.initState();
+    _userCubit = UserCubit(); // Initialisation du Cubit utilisateur
+  }
+
+  @override
+  void dispose() {
+    _userCubit.close(); // Fermeture du Cubit utilisateur
+    super.dispose();
+  }
 
   Future<void> selectDate(BuildContext context) async {
     final DateTime? pickedDate = await DatePicker.showDatePicker(
@@ -80,7 +96,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
           weather: weather,
         ),
       );
-      selectedDate = '' as DateTime;
+      selectedDate = DateTime(1900);
       locationController.clear();
       commentController.clear();
       selectedImagePath = 'null';
@@ -93,87 +109,92 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
       appBar: AppBar(
         title: Text('Travel Journal'),
       ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: locationController,
-                    decoration: InputDecoration(
-                      labelText: 'Lieu visité',
+      body: BlocProvider(
+        // Ajout de BlocProvider pour envelopper la colonne des widgets
+        create: (context) => _userCubit,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: locationController,
+                      decoration: InputDecoration(
+                        labelText: 'Lieu visité',
+                      ),
                     ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.date_range),
-                  onPressed: () {
-                    selectDate(context);
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: commentController,
-              decoration: InputDecoration(
-                labelText: 'Commentaire',
+                  IconButton(
+                    icon: Icon(Icons.date_range),
+                    onPressed: () {
+                      selectDate(context);
+                    },
+                  ),
+                ],
               ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              selectImage(context);
-            },
-            child: Text('Ajouter une photo'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              addTravelEntry();
-            },
-            child: Text('Ajouter'),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: travelEntries.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('Lieu : ${travelEntries[index].location}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Date : ${travelEntries[index].formattedDate}'),
-                      Text('Commentaire : ${travelEntries[index].comment}'),
-                      if (travelEntries[index].imagePath != null)
-                        Image.file(
-                          File(travelEntries[index].imagePath),
-                          width: 100,
-                          height: 100,
-                        ),
-                      FutureBuilder<Weather>(
-                        future: fetchWeather(travelEntries[index].location),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            final weather = snapshot.data;
-                            return Text('Météo : ${weather?.temperature?.celsius ?? 'N/A'}°C, ${weather?.weatherDescription ?? 'N/A'} ');
-                          } else if (snapshot.hasError) {
-                            return Text('Erreur de chargement de la météo');
-                          } else {
-                            return CircularProgressIndicator();
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: commentController,
+                decoration: InputDecoration(
+                  labelText: 'Commentaire',
+                ),
+              ),
             ),
-          ),
-        ],
+            ElevatedButton(
+              onPressed: () {
+                selectImage(context);
+              },
+              child: Text('Ajouter une photo'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                addTravelEntry();
+              },
+              child: Text('Ajouter'),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: travelEntries.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text('Lieu : ${travelEntries[index].location}'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Date : ${travelEntries[index].formattedDate}'),
+                        Text('Commentaire : ${travelEntries[index].comment}'),
+                        if (travelEntries[index].imagePath != null)
+                          Image.file(
+                            File(travelEntries[index].imagePath),
+                            width: 100,
+                            height: 100,
+                          ),
+                        FutureBuilder<Weather>(
+                          future: fetchWeather(travelEntries[index].location),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final weather = snapshot.data;
+                              return Text(
+                                  'Météo : ${weather?.temperature?.celsius ?? 'N/A'}°C, ${weather?.weatherDescription ?? 'N/A'} ');
+                            } else if (snapshot.hasError) {
+                              return Text('Erreur de chargement de la météo');
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
