@@ -190,14 +190,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_datetime_picker:
+  flutter_datetime_picker_plus:
     dependency: "direct main"
     description:
-      name: flutter_datetime_picker
-      sha256: "8e695c63c769350e541951227c2775190ec73ceda774a315b1dc9a99d5facfe5"
+      name: flutter_datetime_picker_plus
+      sha256: "0d04dc106072e0fa977295fa80b67abd27e733b968d4198652c2a2c3c08ca16e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.1"
+    version: "2.0.0+1"
   flutter_lints:
     dependency: "direct dev"
     description:
