@@ -8,8 +8,11 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:projet_carnet_voyage_vhe/UserCubit.dart';
 import 'package:weather/weather.dart';
+import 'package:projet_carnet_voyage_vhe/LieuCubit.dart';
+
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseFirestore.instance.settings = Settings(persistenceEnabled: false); // Optionnel : désactivez la persistance Firestore si vous n'en avez pas besoin
   runApp(TravelJournalApp());
@@ -41,17 +44,21 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
   late DateTime selectedDate;
   late String selectedImagePath;
    late UserCubit _userCubit;
+   late PlacesCubit _placesCubit;
   WeatherFactory weatherFactory =
   WeatherFactory("d1555451a6d58b703c400f0d4769379f", language: Language.FRENCH);
 
   @override
   void initState() {
     super.initState();
+    _placesCubit = PlacesCubit();
+    _placesCubit.fetchPlaces();
     _userCubit = UserCubit(); // Initialisation du Cubit utilisateur
   }
 
   @override
   void dispose() {
+    _placesCubit.close();
     _userCubit.close(); // Fermeture du Cubit utilisateur
     super.dispose();
   }
@@ -92,6 +99,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
     }
 
     Weather weather = await fetchWeather(locationController.text);
+
 
     setState(() {
       travelEntries.add(
@@ -222,6 +230,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
           ],
         ),
       ),
+
     );
   }
 }
