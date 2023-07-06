@@ -130,6 +130,12 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
                     },
                     child: Text('Se connecter'),
                   ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _userCubit.signOut(); // Appeler la méthode signOut() du UserCubit
+                    },
+                    child: Text('Se déconnecter'),
+                  ),
                   Expanded(
                     child: TextField(
                       controller: locationController,
