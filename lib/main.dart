@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
@@ -7,7 +8,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:projet_carnet_voyage_vhe/UserCubit.dart';
 import 'package:weather/weather.dart';
 
-void main() => runApp(TravelJournalApp());
+Future<void> main() async {
+  await Firebase.initializeApp();
+  runApp(TravelJournalApp());
+}
+
+
+
+
 
 class TravelJournalApp extends StatelessWidget {
   @override

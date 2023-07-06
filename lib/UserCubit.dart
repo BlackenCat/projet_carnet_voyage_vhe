@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Événements pour le Cubit
@@ -10,10 +12,10 @@ class UserState {
   final String userName;
   final bool isLoading;
 
-  UserState({required this.userName, required this.isLoading});
+  UserState({required this.userName, required this.isLoading,});
 
   factory UserState.initial() {
-    return UserState(userName: '', isLoading: false);
+    return UserState(userName: '', isLoading: false, );
   }
 
   UserState copyWith({String? userName, bool? isLoading}) {
@@ -36,8 +38,9 @@ class UserCubit extends Cubit<UserState> {
       // Simuler une requête réseau
       await Future.delayed(Duration(seconds: 2));
 
-      // Mettre à jour le nom de l'utilisateur
-      String userName = 'John Doe';
+      // Vérifier l'état d'authentification
+      User? user = FirebaseAuth.instance.currentUser;
+      String userName = user != null ? user.displayName ?? 'John Doe' : 'John Doe';
 
       // Mettre à jour l'état avec le nom de l'utilisateur
       emit(state.copyWith(userName: userName, isLoading: false));
