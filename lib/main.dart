@@ -1,22 +1,11 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:projet_carnet_voyage_vhe/UserCubit.dart';
 import 'package:weather/weather.dart';
-import 'package:projet_carnet_voyage_vhe/LieuCubit.dart';
 
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  FirebaseFirestore.instance.settings = Settings(persistenceEnabled: false); // Optionnel : désactivez la persistance Firestore si vous n'en avez pas besoin
-  runApp(TravelJournalApp());
-}
+void main() => runApp(TravelJournalApp());
 
 class TravelJournalApp extends StatelessWidget {
   @override
@@ -43,25 +32,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
   TextEditingController commentController = TextEditingController();
   late DateTime selectedDate;
   late String selectedImagePath;
-   late UserCubit _userCubit;
-   late PlacesCubit _placesCubit;
-  WeatherFactory weatherFactory =
-  WeatherFactory("d1555451a6d58b703c400f0d4769379f", language: Language.FRENCH);
-
-  @override
-  void initState() {
-    super.initState();
-    _placesCubit = PlacesCubit();
-    _placesCubit.fetchPlaces();
-    _userCubit = UserCubit(); // Initialisation du Cubit utilisateur
-  }
-
-  @override
-  void dispose() {
-    _placesCubit.close();
-    _userCubit.close(); // Fermeture du Cubit utilisateur
-    super.dispose();
-  }
+  WeatherFactory weatherFactory = WeatherFactory("d1555451a6d58b703c400f0d4769379f", language: Language.FRENCH);
 
   Future<void> selectDate(BuildContext context) async {
     final DateTime? pickedDate = await DatePicker.showDatePicker(
@@ -100,7 +71,6 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
 
     Weather weather = await fetchWeather(locationController.text);
 
-
     setState(() {
       travelEntries.add(
         TravelEntry(
@@ -111,7 +81,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
           weather: weather,
         ),
       );
-      selectedDate = DateTime(1900);
+      selectedDate = '' as DateTime;
       locationController.clear();
       commentController.clear();
       selectedImagePath = 'null';
@@ -124,113 +94,98 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
       appBar: AppBar(
         title: Text('Travel Journal'),
       ),
-      body: BlocProvider(
-        // Ajout de BlocProvider pour envelopper la colonne des widgets
-        create: (context) => _userCubit,
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      _userCubit.signIn(); // Appeler la méthode signIn() du UserCubit
-                    },
-                    child: Text('Se connecter'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _userCubit.signOut(); // Appeler la méthode signOut() du UserCubit
-                    },
-                    child: Text('Se déconnecter'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _userCubit.saveUserData('John Doe', 'johndoe@example.com'); // Appeler la méthode saveUserData() du UserCubit sans spécifier d'ID
-                    },
-                    child: Text('Enregistrer'),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: locationController,
-                      decoration: InputDecoration(
-                        labelText: 'Lieu visité',
-                      ),
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: locationController,
+                    decoration: InputDecoration(
+                      labelText: 'Lieu visité',
                     ),
-
                   ),
-                  IconButton(
-                    icon: Icon(Icons.date_range),
-                    onPressed: () {
-                      selectDate(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: commentController,
-                decoration: InputDecoration(
-                  labelText: 'Commentaire',
                 ),
+                IconButton(
+                  icon: Icon(Icons.date_range),
+                  onPressed: () {
+                    selectDate(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: commentController,
+              decoration: InputDecoration(
+                labelText: 'Commentaire',
               ),
             ),
-            ElevatedButton(
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: ElevatedButton(
               onPressed: () {
                 selectImage(context);
               },
-              child: Text('Ajouter une photo'),
+            child: Text('Ajouter une photo'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                addTravelEntry();
-              },
-              child: Text('Ajouter'),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: travelEntries.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('Lieu : ${travelEntries[index].location}'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Date : ${travelEntries[index].formattedDate}'),
-                        Text('Commentaire : ${travelEntries[index].comment}'),
-                        if (travelEntries[index].imagePath != null)
-                          Image.file(
-                            File(travelEntries[index].imagePath),
-                            width: 100,
-                            height: 100,
+          ),
+          
+          
+          ElevatedButton(
+            onPressed: () {
+              addTravelEntry();
+            },
+            child: Text('Ajouter'),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: travelEntries.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: ListTile(
+                      title: Text('Lieu : ${travelEntries[index].location}'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Date : ${travelEntries[index].formattedDate}'),
+                          Text('Commentaire : ${travelEntries[index].comment}'),
+                          if (travelEntries[index].imagePath != null)
+                            Image.file(
+                              File(travelEntries[index].imagePath),
+                              width: 100,
+                              height: 100,
+                            ),
+                          FutureBuilder<Weather>(
+                            future: fetchWeather(travelEntries[index].location),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                final weather = snapshot.data;
+                                return Text('Météo : ${weather?.temperature?.celsius ?? 'N/A'}°C, ${weather?.weatherDescription ?? 'N/A'} ');
+                              } else if (snapshot.hasError) {
+                                return Text('Erreur de chargement de la météo');
+                              } else {
+                                return CircularProgressIndicator();
+                              }
+                            },
                           ),
-                        FutureBuilder<Weather>(
-                          future: fetchWeather(travelEntries[index].location),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              final weather = snapshot.data;
-                              return Text(
-                                  'Météo : ${weather?.temperature?.celsius ?? 'N/A'}°C, ${weather?.weatherDescription ?? 'N/A'} ');
-                            } else if (snapshot.hasError) {
-                              return Text('Erreur de chargement de la météo');
-                            } else {
-                              return CircularProgressIndicator();
-                            }
-                          },
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+                  ),
+                );
+              },
+            )
+          ),
+        ],
       ),
-
     );
   }
 }
