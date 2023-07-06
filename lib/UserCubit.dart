@@ -30,6 +30,24 @@ class UserState {
 class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserState.initial());
 
+  Future<void> signIn() async {
+    try {
+      emit(state.copyWith(isLoading: true));
+
+      // Utilisez FirebaseAuth.instance pour gérer l'authentification de l'utilisateur
+      // Par exemple, pour effectuer une connexion anonyme :
+      UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
+
+      // Mettre à jour l'état de l'utilisateur avec les informations appropriées
+      User user = userCredential.user!;
+      String userName = user.uid;
+      emit(state.copyWith(userName: userName, isLoading: false));
+    } catch (e) {
+      emit(state.copyWith(isLoading: false));
+      // Gérer les erreurs
+    }
+  }
+
   void fetchUser() async {
     // Indiquer que le chargement est en cours
     emit(state.copyWith(isLoading: true));

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
@@ -12,10 +13,6 @@ Future<void> main() async {
   await Firebase.initializeApp();
   runApp(TravelJournalApp());
 }
-
-
-
-
 
 class TravelJournalApp extends StatelessWidget {
   @override
@@ -42,7 +39,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
   TextEditingController commentController = TextEditingController();
   late DateTime selectedDate;
   late String selectedImagePath;
-  late UserCubit _userCubit;
+   late UserCubit _userCubit;
   WeatherFactory weatherFactory =
   WeatherFactory("d1555451a6d58b703c400f0d4769379f", language: Language.FRENCH);
 
@@ -127,6 +124,12 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _userCubit.signIn(); // Appeler la méthode signIn() du UserCubit
+                    },
+                    child: Text('Se connecter'),
+                  ),
                   Expanded(
                     child: TextField(
                       controller: locationController,
@@ -134,6 +137,7 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
                         labelText: 'Lieu visité',
                       ),
                     ),
+
                   ),
                   IconButton(
                     icon: Icon(Icons.date_range),
