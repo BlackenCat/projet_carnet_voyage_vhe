@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:weather/weather.dart';
 
@@ -126,12 +126,17 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              selectImage(context);
-            },
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: ElevatedButton(
+              onPressed: () {
+                selectImage(context);
+              },
             child: Text('Ajouter une photo'),
+            ),
           ),
+          
+          
           ElevatedButton(
             onPressed: () {
               addTravelEntry();
@@ -142,37 +147,42 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
             child: ListView.builder(
               itemCount: travelEntries.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('Lieu : ${travelEntries[index].location}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Date : ${travelEntries[index].formattedDate}'),
-                      Text('Commentaire : ${travelEntries[index].comment}'),
-                      if (travelEntries[index].imagePath != null)
-                        Image.file(
-                          File(travelEntries[index].imagePath),
-                          width: 100,
-                          height: 100,
-                        ),
-                      FutureBuilder<Weather>(
-                        future: fetchWeather(travelEntries[index].location),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            final weather = snapshot.data;
-                            return Text('Météo : ${weather?.temperature?.celsius ?? 'N/A'}°C, ${weather?.weatherDescription ?? 'N/A'} ');
-                          } else if (snapshot.hasError) {
-                            return Text('Erreur de chargement de la météo');
-                          } else {
-                            return CircularProgressIndicator();
-                          }
-                        },
+                return Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: ListTile(
+                      title: Text('Lieu : ${travelEntries[index].location}'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Date : ${travelEntries[index].formattedDate}'),
+                          Text('Commentaire : ${travelEntries[index].comment}'),
+                          if (travelEntries[index].imagePath != null)
+                            Image.file(
+                              File(travelEntries[index].imagePath),
+                              width: 100,
+                              height: 100,
+                            ),
+                          FutureBuilder<Weather>(
+                            future: fetchWeather(travelEntries[index].location),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                final weather = snapshot.data;
+                                return Text('Météo : ${weather?.temperature?.celsius ?? 'N/A'}°C, ${weather?.weatherDescription ?? 'N/A'} ');
+                              } else if (snapshot.hasError) {
+                                return Text('Erreur de chargement de la météo');
+                              } else {
+                                return CircularProgressIndicator();
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 );
               },
-            ),
+            )
           ),
         ],
       ),
