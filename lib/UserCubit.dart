@@ -48,6 +48,22 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
+
+  Future<void> signOut() async {
+    try {
+      emit(state.copyWith(isLoading: true));
+
+      // Utilisez FirebaseAuth.instance pour gérer la déconnexion de l'utilisateur
+      await FirebaseAuth.instance.signOut();
+
+      // Mettre à jour l'état de l'utilisateur après la déconnexion
+      emit(state.copyWith(userName: '', isLoading: false));
+    } catch (e) {
+      emit(state.copyWith(isLoading: false));
+      // Gérer les erreurs
+    }
+  }
+
   void fetchUser() async {
     // Indiquer que le chargement est en cours
     emit(state.copyWith(isLoading: true));
