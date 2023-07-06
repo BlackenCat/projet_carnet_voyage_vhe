@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,7 @@ import 'package:weather/weather.dart';
 
 Future<void> main() async {
   await Firebase.initializeApp();
+  FirebaseFirestore.instance.settings = Settings(persistenceEnabled: false); // Optionnel : désactivez la persistance Firestore si vous n'en avez pas besoin
   runApp(TravelJournalApp());
 }
 
@@ -135,6 +136,12 @@ class _TravelJournalScreenState extends State<TravelJournalScreen> {
                       _userCubit.signOut(); // Appeler la méthode signOut() du UserCubit
                     },
                     child: Text('Se déconnecter'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _userCubit.saveUserData('John Doe', 'johndoe@example.com'); // Appeler la méthode saveUserData() du UserCubit sans spécifier d'ID
+                    },
+                    child: Text('Enregistrer'),
                   ),
                   Expanded(
                     child: TextField(

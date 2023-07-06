@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 // Événements pour le Cubit
 abstract class UserEvent {}
@@ -29,6 +31,23 @@ class UserState {
 // Cubit utilisateur
 class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserState.initial());
+
+  Future<void> saveUserData(String name, String email) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+
+      // Utilisez FirebaseFirestore.instance pour enregistrer les données dans Firestore
+      CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+      await usersCollection.add({'name': name, 'email': email});
+
+      // Mettre à jour l'état de l'utilisateur avec les informations appropriées
+      emit(state.copyWith(isLoading: false));
+    } catch (e) {
+      emit(state.copyWith(isLoading: false));
+      // Gérer les erreurs
+    }
+  }
+
 
   Future<void> signIn() async {
     try {
