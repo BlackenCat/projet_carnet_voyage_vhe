@@ -9,17 +9,14 @@ flutter:
 sdk: flutter
 
 cupertino_icons: ^1.0.2
-
-weather: ^3.0.0
-
-image_picker: ^1.0.0
-
-flutter_datetime_picker: ^1.5.1
-
-open_weather_api_client: ^3.1.1
-
-Flutter :  3.7.12
-
+  weather: ^3.0.0
+  image_picker: ^1.0.0
+  open_weather_api_client: ^3.1.1
+  firebase_core: ^2.14.0
+  firebase_auth: ^4.6.3
+  flutter_datetime_picker_plus: ^2.0.0+1
+  flutter_bloc: ^8.1.3
+  cloud_firestore: ^4.8.2
 ## Les fonctionnalités
 
 L'applications nous permet de créer des activités que nous avons effectués avec photo et descriptif
